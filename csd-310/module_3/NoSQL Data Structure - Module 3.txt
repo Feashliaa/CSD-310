@@ -1,0 +1,18 @@
+{
+"publisher_name" : "John Smith"
+"publisher_code" : "BH1G4A"
+"publisher_address" : "1 Front Street"
+“books”:[
+{
+"book_isbn" : "978-3-16-148410-0"
+"book_name" : "How to Make Pizza"
+"book_price" : "$10.00"
+"author": [
+}]
+{
+"author_first_name" : "Kristy"
+"author_last_name" : "Rodriguez"
+"author_phone" : "1-790-754-3651"
+"author_email" : "KristyRod@gmail.com"
+}]
+}
