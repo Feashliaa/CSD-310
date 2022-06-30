@@ -4,7 +4,7 @@ from mysql.connector import errorcode
 mydb = {
     "host": '127.0.0.1',
     "user": 'root',
-    "password": 'D4rkGwen2#',
+    "password": '---------',
     "database": 'pysports',
     "raise_on_warnings": True
 }
