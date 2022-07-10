@@ -6,7 +6,7 @@ mydb = {
     "host": '127.0.0.1',
     "user": 'root',
     "password": 'password',  # replace with your own password
-    # make sure to have an existing database of this name to store CHAR(20)o
+    # make sure to have an existing database of this name to store
     "database": 'bacchus_winery',
     "raise_on_warnings": True
 }
@@ -23,8 +23,8 @@ try:
     # Creating a cursor object using the cursor method
     cursor = db.cursor()
 
-    # Drop all tables if they exist - ONLY USE THIS FOR TESTING, 
-    # you need to drop the tables every time you run the script. 
+    # Drop all tables if they exist - ONLY USE THIS FOR TESTING,
+    # you need to drop the tables every time you run the script.
     # Once you have the tables, you can comment this out.
     cursor.execute("DROP TABLE IF EXISTS COMPANY;")
     cursor.execute("DROP TABLE IF EXISTS EMPLOYEE;")
@@ -90,7 +90,8 @@ try:
     cursor.executemany(sql, val,)
 
     # Inserting data INTO the DISTRIBUTOR_ORDERS table
-    sql = "INSERT INTO DISTRIBUTOR_ORDERS (DISTRIBUTOR_ORDER_NUMBER, DISTRIBUTOR_ID, PRODUCT_ID, AMOUNT_BOUGHT, TOTAL_PRICE, TRACKING_NUMBER, ORDER_DATE, SHIP_DATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = '''INSERT INTO DISTRIBUTOR_ORDERS (DISTRIBUTOR_ORDER_NUMBER, DISTRIBUTOR_ID, 
+    PRODUCT_ID, AMOUNT_BOUGHT, TOTAL_PRICE, TRACKING_NUMBER, ORDER_DATE, SHIP_DATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'''
     val = [
         (200101, 2001, 70001, 20, 1980, "2004001", "2022-01-01", "2022-01-03"),
         (200102, 2001, 70002, 20, 1180, "2004002", "2022-01-01", "2022-01-03"),
@@ -125,7 +126,8 @@ try:
     cursor.executemany(sql, val,)
 
     # Inserting data INTO the Supply_Orders table
-    sql = "INSERT INTO SUPPLY_ORDERS (SUPPLY_ORDER_NUMBER, SUPPLIER_ID, SUPPLY_ID, AMOUNT_ORDERED, TOTAL_COST, SUPPLY_ORDER_DATE, SUPPLY_SHIP_DATE, EXPECTED_DELIVERY_DATE, ACTUAL_DELIVERY_DATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = '''INSERT INTO SUPPLY_ORDERS (SUPPLY_ORDER_NUMBER, SUPPLIER_ID, SUPPLY_ID, AMOUNT_ORDERED, TOTAL_COST, 
+    SUPPLY_ORDER_DATE, SUPPLY_SHIP_DATE, EXPECTED_DELIVERY_DATE, ACTUAL_DELIVERY_DATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'''
     val = [
         (300101, 3001, 90001, 23, 2500, "2022-02-01",
          "2022-02-03", "2022-02-05", "2022-02-05"),
@@ -271,5 +273,7 @@ except mysql.connector.Error as err:
         print(err)
 
 finally:
+    # committing the changes, and closing the connection
+    db.commit()
     db.close()
     print("\n Database connection closed")
