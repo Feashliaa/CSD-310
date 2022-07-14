@@ -28,6 +28,7 @@ try:
     # Once you have the tables, you can comment this out.
     cursor.execute("DROP TABLE IF EXISTS COMPANY;")
     cursor.execute("DROP TABLE IF EXISTS EMPLOYEE;")
+    cursor.execute("DROP TABLE IF EXISTS HOURS_WORKED;")
     cursor.execute("DROP TABLE IF EXISTS PRODUCTS;")
     cursor.execute("DROP TABLE IF EXISTS DISTRIBUTOR_ORDERS;")
     cursor.execute("DROP TABLE IF EXISTS DISTRIBUTOR;")
@@ -35,11 +36,16 @@ try:
     cursor.execute("DROP TABLE IF EXISTS SUPPLY_ORDERS;")
     cursor.execute("DROP TABLE IF EXISTS SUPPLIER;")
 
+
     # Creating all tables
     cursor.execute("CREATE TABLE COMPANY (COMPANY_NAME CHAR(20))")
 
     cursor.execute(
-        "CREATE TABLE EMPLOYEE (EMPLOYEE_ID int, FIRST_NAME CHAR(20), LAST_NAME CHAR(20),JOB_TITLE CHAR(20), HOURS_WORKED int)")
+        "CREATE TABLE EMPLOYEE (EMPLOYEE_ID int, FIRST_NAME CHAR(20), LAST_NAME CHAR(20), JOB_TITLE CHAR(20))")
+
+    cursor.execute(
+        "CREATE TABLE HOURS_WORKED (EMPLOYEE_ID int, Q1 int, Q2 int, Q3 int, Q4 int)")
+    print("test")
 
     cursor.execute(
         "CREATE TABLE PRODUCTS (PRODUCT_ID int, PRODUCT_NAME char(20), AMOUNT_IN_INVENTORY int, AMOUNT_SOLD int, PRICE float)")
@@ -65,40 +71,53 @@ try:
     cursor.execute(sql, (val,))
 
     # Inserting data INTO the Employee table
-    sql = "INSERT INTO EMPLOYEE (EMPLOYEE_ID, FIRST_NAME, LAST_NAME, JOB_TITLE, HOURS_WORKED) VALUES (%s, %s, %s, %s, %s)"
+    sql = "INSERT INTO EMPLOYEE (EMPLOYEE_ID, FIRST_NAME, LAST_NAME, JOB_TITLE) VALUES (%s, %s, %s, %s)"
     val = [
-        (1001, "Stan", "Bacchus", "Owner", 40),
-        (1002, "Davis", "Bacchus", "Owner", 40),
-        (1003, "Janet", "Collins", "Finances/Payroll", 40),
-        (1004,	"Roz",	"Murphy", "Marketing", 40),
-        (1005,	"Bob",	"Ulrich", "Assistant to Roz", 40),
-        (1006,	"Henry", "Doyle", "Manages Production", 40),
-        (1007,	"Maria", "Costanza", "Manages Distribution", 40)
+        (1001, "Stan", "Bacchus", "Owner"),
+        (1002, "Davis", "Bacchus", "Owner"),
+        (1003, "Janet", "Collins", "Finances/Payroll"),
+        (1004,	"Roz",	"Murphy", "Marketing"),
+        (1005,	"Bob",	"Ulrich", "Assistant to Roz"),
+        (1006,	"Henry", "Doyle", "Manages Production"),
+        (1007,	"Maria", "Costanza", "Manages Distribution")
     ]
-    print("test 1")
+    
+    cursor.executemany(sql, val,)
+
+    # Inserting data INTO the Hours Worked table
+    sql = "INSERT INTO HOURS_WORKED (EMPLOYEE_ID, Q1, Q2, Q3, Q4) VALUES (%s, %s, %s, %s, %s)"
+    val = [
+        (1001, 520, 460, 504, 512),
+        (1002, 504, 488, 496, 504),
+        (1003, 480, 500, 488, 494),
+        (1004, 472, 504, 480, 494),
+        (1005, 512, 504, 504, 488),
+        (1006, 512, 480, 504, 512),
+        (1007, 480, 500, 520, 504)
+    ]
     cursor.executemany(sql, val,)
 
     # Inserting data INTO the Products table
     sql = "INSERT INTO PRODUCTS (PRODUCT_ID, PRODUCT_NAME, AMOUNT_IN_INVENTORY, AMOUNT_SOLD, PRICE) VALUES (%s, %s, %s, %s, %s)"
     val = [
-        (70001, "Merlot", 499, 1000, 99.99),
-        (70002, "Cabernet", 499, 1000, 59.99),
-        (70003, "Chablis", 499, 1000, 67.99),
-        (70004, "Chardonnay", 499, 1000, 55.99)
+        (70001, "Merlot", 499, 1000, 99.00),
+        (70002, "Cabernet", 499, 1000, 59.00),
+        (70003, "Chablis", 499, 1000, 67.00),
+        (70004, "Chardonnay", 499, 1000, 55.00)
     ]
-    print("test 2")
+
     cursor.executemany(sql, val,)
 
     # Inserting data INTO the DISTRIBUTOR_ORDERS table
     sql = '''INSERT INTO DISTRIBUTOR_ORDERS (DISTRIBUTOR_ORDER_NUMBER, DISTRIBUTOR_ID, 
     PRODUCT_ID, AMOUNT_BOUGHT, TOTAL_PRICE, TRACKING_NUMBER, ORDER_DATE, SHIP_DATE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'''
     val = [
-        (200101, 2001, 70001, 20, 1980, "2004001", "2022-01-01", "2022-01-03"),
-        (200102, 2001, 70002, 20, 1180, "2004002", "2022-01-01", "2022-01-03"),
-        (200103, 2001, 70003, 20, 1340, "2004003", "2022-01-01", "2022-01-03"),
-        (200104, 2001, 70004, 20, 1100, "2004004", "2022-01-01", "2022-01-03")
+        (200101, 2001, 70001, 10, 990, "2004001", "2022-01-01", "2022-01-03"),
+        (200102, 2002, 70002, 30, 1770, "2004002", "2022-01-01", "2022-01-03"),
+        (200103, 2003, 70003, 20, 1340, "2004003", "2022-01-01", "2022-01-03"),
+        (200104, 2004, 70004, 20, 1375, "2004004", "2022-01-01", "2022-01-03")
     ]
-    print("test 3")
+
     cursor.executemany(sql, val,)
 
     # Inserting data INTO the Distributor table
@@ -109,7 +128,7 @@ try:
         (2003, "Day Drinking"),
         (2004, "Live, Laugh, Wine")
     ]
-    print("test 4")
+
     cursor.executemany(sql, val,)
 
     # Inserting data INTO the Supplies table
@@ -122,7 +141,7 @@ try:
         (90005, "Vats", 101),
         (90006, "Tubing", 49)
     ]
-    print("test 5")
+
     cursor.executemany(sql, val,)
 
     # Inserting data INTO the Supply_Orders table
@@ -144,7 +163,7 @@ try:
         (300106, 3003, 90006, 90, 2500, "2022-02-01",
          "2022-02-03", "2022-02-05", "2022-02-05")
     ]
-    print("test 6")
+
     cursor.executemany(sql, val,)
 
     # Inserting data INTO the Supplier table
@@ -154,7 +173,7 @@ try:
         (3002, "L&B"),
         (3003, "V&T")
     ]
-    print("test 7")
+
     cursor.executemany(sql, val,)
 
     # Showing the tables
@@ -210,6 +229,18 @@ try:
     # loop through the rows
     print("----------------------------------------")
     print("EMPLOYEE")
+    print("----------------------------------------")
+    for row in result:
+        print(row)
+        print("\n")
+        
+    # execute your query
+    cursor.execute("SELECT * FROM HOURS_WORKED;")
+    # fetch all the matching rows
+    result = cursor.fetchall()
+    # loop through the rows
+    print("----------------------------------------")
+    print("HOURS_WORKED")
     print("----------------------------------------")
     for row in result:
         print(row)
