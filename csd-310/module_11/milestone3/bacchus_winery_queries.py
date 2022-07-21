@@ -34,7 +34,7 @@ try:
     
     print("--                      Expected vs. Actual Delivery Date                        --")
     report_1 = PrettyTable(['Supply Order Number', 'Expected Delivery Date', 'Actual Delivery Date', "Days Late"])
-
+    
     for row in delivery_Dates:
         
         d0 = row[1]
