@@ -1,6 +1,8 @@
 from platform import python_branch
 import mysql.connector
 from mysql.connector import errorcode
+from datetime import date
+from prettytable import PrettyTable
 
 mydb = {
     "host": '127.0.0.1',
@@ -29,50 +31,62 @@ try:
 
     # Storing the results of the query in a variable
     delivery_Dates = cursor.fetchall()
+    
+    print("--                      Expected vs. Actual Delivery Date                        --")
+    report_1 = PrettyTable(['Supply Order Number', 'Expected Delivery Date', 'Actual Delivery Date', "Days Late"])
 
-    print("-- Expected vs. Actual Delivery Date --")
-
-    # Looping through the results of the query
     for row in delivery_Dates:
-        print("Supply Order Number:           {}".format(row[0]))
-        print("Expected Delivery Date:        {}".format(row[1]))
-        print("Actual Delivery Date:          {}".format(row[2]))
-        print("\n")
+        
+        d0 = row[1]
+        d1 = row[2]
+        days_between = d1 - d0
+        report_1.add_row([row[0], row[1], row[2], days_between.days])
+        
+    print(report_1)
+    
+    print('\n')
 
     # Select the distributor name, wine name, and the amount of wine sold
-    cursor.execute('''SELECT DISTRIBUTOR.DISTRIBUTOR_NAME, PRODUCTS.PRODUCT_NAME, DISTRIBUTOR_ORDERS.AMOUNT_BOUGHT 
+    cursor.execute('''SELECT DISTRIBUTOR.DISTRIBUTOR_NAME, PRODUCTS.PRODUCT_NAME, DISTRIBUTOR_ORDERS.AMOUNT_BOUGHT, DISTRIBUTOR_ORDERS.ORDER_DATE, DISTRIBUTOR_ORDERS.SHIP_DATE 
                    FROM PRODUCTS INNER JOIN DISTRIBUTOR_ORDERS ON PRODUCTS.PRODUCT_ID = DISTRIBUTOR_ORDERS.PRODUCT_ID INNER JOIN 
                    DISTRIBUTOR ON DISTRIBUTOR_ORDERS.DISTRIBUTOR_ID = DISTRIBUTOR.DISTRIBUTOR_ID''')
 
     # Storing the results of the query in a variable
     wine_sold = cursor.fetchall()
 
-    print("-- Wines Sold --")
+    print("--                                 Wines Sold                              --")
+    report_2 = PrettyTable(['Distributor', 'Wine', 'Amount Sold', 'Order Date', 'Shipment Date'])
 
     # Looping through the results of the query
     for row in wine_sold:
-        print("Distributor:          {}".format(row[0]))
-        print("Wine:                 {}".format(row[1]))
-        print("Amount Sold:          {}".format(row[2]))
-        print("\n")
+        report_2.add_row([row[0], row[1], row[2], row[3], row[4]])
+        
+    print(report_2)
+    
+    print('\n')
 
     # select the employee name and the numbers of hours worked per quarter
     cursor.execute('''SELECT EMPLOYEE.FIRST_NAME, EMPLOYEE.LAST_NAME, HOURS_WORKED.Q1, HOURS_WORKED.Q2, HOURS_WORKED.Q3, HOURS_WORKED.Q4
                    FROM EMPLOYEE INNER JOIN HOURS_WORKED ON EMPLOYEE.EMPLOYEE_ID = HOURS_WORKED.EMPLOYEE_ID''')
-
+    
     # Storing the results of the query in a variable
     hours_worked = cursor.fetchall()
-
-    print("-- Hours Worked --")
+    
+    print("--               Employee Hours Worked                  --")
+    report_3 = PrettyTable(['First Name', 'Last Name',
+                    'Q1', 'Q2', 'Q3', 'Q4', 'Total'])
 
     # Looping through the results of the query
     for row in hours_worked:
-        print("Employee:        {}".format(row[0]) + " " + row[1])
-        print("Q1:              {}".format(row[2]) + " hours")
-        print("Q2:              {}".format(row[3]) + " hours")
-        print("Q3:              {}".format(row[4]) + " hours")
-        print("Q4:              {}".format(row[5]) + " hours")
-        print("\n")
+        total_hours = 0
+        total_hours = total_hours + row[2]
+        total_hours = total_hours + row[3]
+        total_hours = total_hours + row[4]
+        total_hours = total_hours + row[5]
+        report_3.add_row([row[0], row[1], row[2], row[3],
+                  row[4], row[5], total_hours])
+
+    print(report_3)
 
 
 except mysql.connector.Error as err:
